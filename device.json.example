@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "deviceId": "your_device_id_here",
+  "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nYour public key will be generated here\n-----END PUBLIC KEY-----\n",
+  "privateKeyPem": "-----BEGIN PRIVATE KEY-----\nYour private key will be generated here - KEEP THIS SECRET!\n-----END PRIVATE KEY-----\n",
+  "createdAtMs": 0
+}

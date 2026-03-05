@@ -1,0 +1,19 @@
+services:
+  openclaw:
+    image: openclaw-sandbox
+    container_name: my-agent
+    ports:
+      - "18789:18789"
+    volumes:
+      - .:/home/node/.openclaw
+    env_file:
+      - .env
+    command: openclaw gateway run --bind lan --allow-unconfigured
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
