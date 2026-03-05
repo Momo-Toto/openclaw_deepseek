@@ -121,6 +121,14 @@ If you want GitHub integration:
    GITHUB_TOKEN=your_github_token_here
    ```
 
+#### 3.4 Environment Variables Note
+**Important**: Docker Compose automatically loads the `.env` file, so you don't need to manually `export` the variables. However, note that:
+- If you edit the `.env` file after containers are already running, you'll need to restart them:
+  ```bash
+  docker-compose restart
+  ```
+- The `.env` file is only used by Docker Compose, not by your shell. If you need to run OpenClaw commands directly (outside Docker), you'll need to set the environment variables in your shell session.
+
 ### Step 4: Discord Bot Setup and Connection
 
 For complete Discord setup instructions, see: [DISCORD_SETUP.md](DISCORD_SETUP.md)
@@ -191,6 +199,8 @@ docker-compose up -d
 # Check logs
 docker-compose logs -f
 ```
+
+> **Tip**: Docker Compose automatically reads the `.env` file from the current directory. If you later edit `.env`, restart the containers with `docker-compose restart` for changes to take effect.
 
 #### 6.2 Verify Installation
 ```bash
@@ -400,11 +410,16 @@ sudo lsof -i :18789
 
 2. **Test API Key**:
    ```bash
+   # First, export the API key from your .env file (or replace YOUR_API_KEY manually)
+   export DEEPSEEK_API_KEY=$(grep DEEPSEEK_API_KEY .env | cut -d '=' -f2)
+   
    curl -X POST https://api.deepseek.com/v1/chat/completions \
-     -H "Authorization: Bearer YOUR_API_KEY" \
+     -H "Authorization: Bearer $DEEPSEEK_API_KEY" \
      -H "Content-Type: application/json" \
      -d '{"model":"deepseek-chat","messages":[{"role":"user","content":"Hello"}]}'
    ```
+   
+   **Alternative**: Manually replace `YOUR_API_KEY` in the command with your actual API key from the `.env` file.
 
 3. **Check Rate Limits**:
    - DeepSeek has rate limits
@@ -440,6 +455,8 @@ docker-compose up -d
    ```
 
 #### 7. Environment Variables Not Loading
+Docker Compose automatically loads environment variables from the `.env` file in the current directory. If variables aren't loading:
+
 ```bash
 # Check if .env file exists and is readable
 ls -la .env
@@ -450,6 +467,12 @@ chmod 600 .env
 # Verify variables are loaded
 docker-compose config | grep -A5 -B5 "environment:"
 ```
+
+**Common issues:**
+- `.env` file not in the same directory as `docker-compose.yml`
+- `.env` file has incorrect syntax (must be `KEY=value` format)
+- Variables contain spaces or special characters (use quotes: `KEY="value with spaces"`)
+- Containers need to be restarted after editing `.env`: `docker-compose restart`
 
 ## 🔄 Maintenance and Updates
 
